@@ -4,6 +4,7 @@ option go_package = "./proto";
 
 package grpc_service;
 
+message NoParams{};
 message HelloRequest{
     string name = 1;
 };
@@ -18,7 +19,7 @@ message MessageLists{
 }
 
 service GrpcService{
-    rpc GetHello(HelloRequest) returns (HelloResponse) {};
+    rpc GetHello(NoParams) returns (HelloResponse) {};
 
     rpc ServerStreaming(Lists) returns (stream HelloResponse);
 

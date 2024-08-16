@@ -29,7 +29,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GrpcServiceClient interface {
-	GetHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error)
+	GetHello(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (*HelloResponse, error)
 	ServerStreaming(ctx context.Context, in *Lists, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HelloResponse], error)
 	ClientStreaming(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[HelloRequest, MessageLists], error)
 	BidirectionalStreaming(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[HelloRequest, HelloResponse], error)
@@ -43,7 +43,7 @@ func NewGrpcServiceClient(cc grpc.ClientConnInterface) GrpcServiceClient {
 	return &grpcServiceClient{cc}
 }
 
-func (c *grpcServiceClient) GetHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloResponse, error) {
+func (c *grpcServiceClient) GetHello(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (*HelloResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(HelloResponse)
 	err := c.cc.Invoke(ctx, GrpcService_GetHello_FullMethodName, in, out, cOpts...)
@@ -102,7 +102,7 @@ type GrpcService_BidirectionalStreamingClient = grpc.BidiStreamingClient[HelloRe
 // All implementations must embed UnimplementedGrpcServiceServer
 // for forward compatibility.
 type GrpcServiceServer interface {
-	GetHello(context.Context, *HelloRequest) (*HelloResponse, error)
+	GetHello(context.Context, *NoParams) (*HelloResponse, error)
 	ServerStreaming(*Lists, grpc.ServerStreamingServer[HelloResponse]) error
 	ClientStreaming(grpc.ClientStreamingServer[HelloRequest, MessageLists]) error
 	BidirectionalStreaming(grpc.BidiStreamingServer[HelloRequest, HelloResponse]) error
@@ -116,7 +116,7 @@ type GrpcServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedGrpcServiceServer struct{}
 
-func (UnimplementedGrpcServiceServer) GetHello(context.Context, *HelloRequest) (*HelloResponse, error) {
+func (UnimplementedGrpcServiceServer) GetHello(context.Context, *NoParams) (*HelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHello not implemented")
 }
 func (UnimplementedGrpcServiceServer) ServerStreaming(*Lists, grpc.ServerStreamingServer[HelloResponse]) error {
@@ -150,7 +150,7 @@ func RegisterGrpcServiceServer(s grpc.ServiceRegistrar, srv GrpcServiceServer) {
 }
 
 func _GrpcService_GetHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+	in := new(NoParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func _GrpcService_GetHello_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: GrpcService_GetHello_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GrpcServiceServer).GetHello(ctx, req.(*HelloRequest))
+		return srv.(GrpcServiceServer).GetHello(ctx, req.(*NoParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
